@@ -37,7 +37,7 @@ export default {
 proxy-providers:
   myprovider:
     type: http
-    url: "https://proxies-worker-gh.sohelcmc53rd.workers.dev/proxies?token=abc123"
+    url: "https://proxies-worker.darkblazespuky.workers.dev/proxies?token=abc123"
     interval: 3600
     path: ./proxies.yaml
     health-check:
