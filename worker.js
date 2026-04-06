@@ -44,12 +44,12 @@ export default {
 proxies:
   - name: "proxy1"
     type: http
-    server: 144.48.108.121
+    server: 44.48.108.333
     port: 5452
 
   - name: "proxy2"
     type: http
-    server: 144.48.108.122
+    server: 44.48.108.333
     port: 5452
 `
 
