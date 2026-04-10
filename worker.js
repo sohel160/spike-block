@@ -3,30 +3,62 @@ export default {
 
     const url = new URL(request.url)
 
+    // token check
     if (url.searchParams.get("token") !== "abc123") {
       return new Response("Forbidden", { status: 403 })
     }
 
+    // allow only Clash clients
     const ua = request.headers.get("User-Agent") || ""
 
-    if (!ua.includes("Clash") && !ua.includes("FiClash")) {
-      return new Response("404", { status: 404 })
+    const allowedUA = [
+      "Clash",
+      "clash",
+      "ClashMeta",
+      "ClashforWindows",
+      "ClashX",
+      "Stash",
+      "FiClash"
+    ]
+
+    let allowed = false
+
+    for (const a of allowedUA) {
+      if (ua.includes(a)) {
+        allowed = true
+        break
+      }
     }
 
-    const proxies = `
-proxies:
+    if (!allowed) {
+      return new Response("404 Not Found", { status: 404 })
+    }
 
-- name: proxy1
-  type: http
-  server: 
-  port: 
+    const config = `
+proxy-providers:
+  myprovider:
+    type: http
+    url: "https://proxies-worker.darkblazespuky.workers.dev/?token=abc123"
+    interval: 3600
+    path: ./proxies.yaml
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 10
 
-- name: proxy2
-  type: http
-  server: 
-  port: 
+proxy-groups:
+- name: "FREE"
+  type: select
+  use:
+  - myprovider
+
+rules:
+- MATCH,FREE
 `
 
-    return new Response(proxies)
+    return new Response(config, {
+      headers: { "Content-Type": "text/plain" }
+    })
+
   }
 }
