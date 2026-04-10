@@ -18,13 +18,13 @@ proxies:
 
 - name: proxy1
   type: http
-  server: 144.48.108.121
-  port: 5452
+  server: 
+  port: 
 
 - name: proxy2
   type: http
-  server: 144.48.108.122
-  port: 5452
+  server: 
+  port: 
 `
 
     return new Response(proxies)
