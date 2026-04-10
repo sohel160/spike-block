@@ -33,17 +33,29 @@ export default {
     }
 
     const proxies = `
-proxies:
+    proxies:
+  - name: BDIX-SS1
+    type: ss
+    server: bdix.errorx.me
+    port: 12545
+    cipher: aes-128-gcm
+    password: 925dca7a-7d12-4167-be86-4923be57a2d9
 
-- name: proxy1
-  type: http
-  server: 
-  port: 
+  - name: BDIX-VM1
+    type: vmess
+    server: bdix.errorx.me
+    port: 12546
+    uuid: 925dca7a-7d12-4167-be86-4923be57a2d9
+    alterId: 0
+    cipher: auto
+    network: tcp
 
-- name: proxy2
-  type: http
-  server: 
-  port: 
+  - name: BDIX-VL1
+    type: vless
+    server: bdix.errorx.me
+    port: 12547
+    uuid: 925dca7a-7d12-4167-be86-4923be57a2d9
+    network: tcp
 
 `
 
