@@ -38,7 +38,7 @@ export default {
 proxy-providers:
   myprovider:
     type: http
-    url: "https://clash-worker.darkblazespuky.workers.dev/?token=abc123"
+    url: 
     interval: 3600
     path: ./proxies.yaml
     health-check:
