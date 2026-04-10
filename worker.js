@@ -3,12 +3,10 @@ export default {
 
     const url = new URL(request.url)
 
-    // token check
     if (url.searchParams.get("token") !== "abc123") {
       return new Response("Forbidden", { status: 403 })
     }
 
-    // allow only Clash clients
     const ua = request.headers.get("User-Agent") || ""
 
     const allowedUA = [
@@ -34,30 +32,25 @@ export default {
       return new Response("404 Not Found", { status: 404 })
     }
 
-    const config = `
-proxy-providers:
-  myprovider:
-    type: http
-    url: 
-    interval: 3600
-    path: ./proxies.yaml
-    health-check:
-      enable: true
-      url: http://www.gstatic.com/generate_204
-      interval: 10
+    const proxies = `
+proxies:
 
-proxy-groups:
-- name: "FREE"
-  type: select
-  use:
-  - myprovider
+- name: proxy1
+  type: http
+  server: 
+  port: 
 
-rules:
-- MATCH,FREE
+- name: proxy2
+  type: http
+  server: 
+  port: 
+
 `
 
-    return new Response(config, {
-      headers: { "Content-Type": "text/plain" }
+    return new Response(proxies, {
+      headers: {
+        "Content-Type": "text/plain"
+      }
     })
 
   }
