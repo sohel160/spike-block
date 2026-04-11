@@ -3,16 +3,31 @@ export default {
 
     const url = new URL(request.url)
 
-    // token protection
     if (url.searchParams.get("token") !== "abc123") {
       return new Response("Forbidden", { status: 403 })
     }
 
-    // allow only FiClash
     const ua = request.headers.get("User-Agent") || ""
 
-    if (!ua.includes("FiClash")) {
-      return new Response("Access Denied", { status: 403 })
+    const allowedUA = [
+      "Clash",
+      "Meta",
+      "FiClash",
+      "Stash",
+      "okhttp"
+    ]
+
+    let allowed = false
+
+    for (const a of allowedUA) {
+      if (ua.includes(a)) {
+        allowed = true
+        break
+      }
+    }
+
+    if (!allowed) {
+      return new Response("404", { status: 404 })
     }
 
     const config = `
@@ -20,7 +35,6 @@ port: 7890
 socks-port: 7891
 allow-lan: true
 mode: rule
-log-level: info
 
 proxy-providers:
   main:
@@ -50,9 +64,7 @@ rules:
 `
 
     return new Response(config, {
-      headers: {
-        "Content-Type": "text/plain"
-      }
+      headers: { "Content-Type": "text/plain" }
     })
 
   }
