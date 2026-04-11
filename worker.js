@@ -44,7 +44,7 @@ log-level: info
 proxy-providers:
   bdix:
     type: http
-    url: "https://proxies-worker.darkblazespuky.workers.dev/?token=abc123"
+    url: "https://spike-block.darkblazespuky.workers.dev/?token=abc123"
     interval: 3600
     path: ./bdix.yaml
     health-check:
