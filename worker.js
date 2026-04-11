@@ -8,11 +8,32 @@ export default {
       return new Response("Forbidden", { status: 403 })
     }
 
-    // allow only FiClash
+    // allow clash family apps
     const ua = request.headers.get("User-Agent") || ""
 
-    if (!ua.includes("FiClash")) {
-      return new Response("Access Denied", { status: 403 })
+    const allowedUA = [
+      "Clash",
+      "clash",
+      "ClashMeta",
+      "ClashforWindows",
+      "ClashX",
+      "Stash",
+      "FiClash",
+      "Meta",
+      "okhttp"
+    ]
+
+    let allowed = false
+
+    for (const a of allowedUA) {
+      if (ua.includes(a)) {
+        allowed = true
+        break
+      }
+    }
+
+    if (!allowed) {
+      return new Response("404 Not Found", { status: 404 })
     }
 
     const config = `
