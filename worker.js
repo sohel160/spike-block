@@ -3,7 +3,7 @@ export default {
 
     const url = new URL(request.url)
 
-    // token protection
+    // token check
     if (url.searchParams.get("token") !== "abc123") {
       return new Response("Forbidden", { status: 403 })
     }
@@ -42,11 +42,24 @@ mode: rule
 log-level: info
 
 proxy-providers:
-  bdix:
+
+  SPEED:
     type: http
     url: "https://spike-block.darkblazespuky.workers.dev/proxies?token=abc123"
     interval: 3600
-    path: ./bdix.yaml
+    path: ./speed.yaml
+    filter: "SPEED"
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 60
+
+  FAST:
+    type: http
+    url: "https://spike-block.darkblazespuky.workers.dev/proxies?token=abc123"
+    interval: 3600
+    path: ./fast.yaml
+    filter: "FAST"
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
@@ -54,20 +67,18 @@ proxy-providers:
 
 proxy-groups:
 
-- name: proxy1
+- name: SPEED
   type: select
   use:
-    - bdix
+    - SPEED
 
-- name: proxy2
-  type: load-balance
-  strategy: round-robin
+- name: FAST
+  type: select
   use:
-    - bdix
-  interval: 60
+    - FAST
 
 rules:
-- MATCH,proxy1
+- MATCH,SPEED
 `
 
     return new Response(config, {
