@@ -47,16 +47,14 @@ proxy-groups:
 
 - name: SPEED
   type: select
-  proxies:
-    - speed
-    - nice
+  use:
+    - main
 
 - name: FAST
   type: load-balance
   strategy: round-robin
-  proxies:
-    - speed
-    - nice
+  use:
+    - main
   interval: 60
 
 rules:
