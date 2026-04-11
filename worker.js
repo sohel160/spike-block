@@ -3,12 +3,10 @@ export default {
 
     const url = new URL(request.url)
 
-    // token protection
     if (url.searchParams.get("token") !== "abc123") {
       return new Response("Forbidden", { status: 403 })
     }
 
-    // allow clash family apps
     const ua = request.headers.get("User-Agent") || ""
 
     const allowedUA = [
@@ -18,9 +16,7 @@ export default {
       "ClashforWindows",
       "ClashX",
       "Stash",
-      "FiClash",
-      "Meta",
-      "okhttp"
+      "FiClash"
     ]
 
     let allowed = false
@@ -36,41 +32,22 @@ export default {
       return new Response("404 Not Found", { status: 404 })
     }
 
-    const config = `
-port: 7890
-socks-port: 7891
-allow-lan: true
-mode: rule
-log-level: info
+    const proxies = `
+proxies:
 
-proxy-providers:
-  main:
-    type: http
-    url: "https://spike-block.darkblazespuky.workers.dev/proxies?token=abc123"
-    interval: 3600
-    path: ./main.yaml
+- name: proxy1
+  type: http
+  server: 103.69.150.138
+  port: 9859
 
-proxy-groups:
+- name: proxy2
+  type: http
+  server: 103.109.96.20
+  port: 9862
 
-- name: SPEED
-  type: select
-  proxies:
-    - speed
-    - nice
-
-- name: FAST
-  type: load-balance
-  strategy: round-robin
-  proxies:
-    - speed
-    - nice
-  interval: 60
-
-rules:
-- MATCH,SPEED
 `
 
-    return new Response(config, {
+    return new Response(proxies, {
       headers: {
         "Content-Type": "text/plain"
       }
