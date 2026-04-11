@@ -3,12 +3,12 @@ export default {
 
     const url = new URL(request.url)
 
-    // token check
+    // token protection
     if (url.searchParams.get("token") !== "abc123") {
       return new Response("Forbidden", { status: 403 })
     }
 
-    // allow only Clash clients
+    // allow only clash clients
     const ua = request.headers.get("User-Agent") || ""
 
     const allowedUA = [
@@ -31,7 +31,7 @@ export default {
     }
 
     if (!allowed) {
-      return new Response("404 Not Found", { status: 404 })
+      return new Response("404", { status: 404 })
     }
 
     const config = `
@@ -44,45 +44,30 @@ log-level: info
 proxy-providers:
   bdix:
     type: http
-    url: "https://spike-block.darkblazespuky.workers.dev/?token=abc123"
+    url: "https://spike-block.darkblazespuky.workers.dev/proxies?token=abc123"
     interval: 3600
     path: ./bdix.yaml
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
-      interval: 30
+      interval: 60
 
 proxy-groups:
 
-- name: PROXY
-  type: select
-  proxies:
-    - AUTO-FAST
-    - AUTO-STABLE
-    - MANUAL
-    - DIRECT
-
-- name: MANUAL
+- name: proxy1
   type: select
   use:
     - bdix
 
-- name: AUTO-FAST
+- name: proxy2
   type: load-balance
   strategy: round-robin
   use:
     - bdix
-  interval: 20
-
-- name: AUTO-STABLE
-  type: load-balance
-  strategy: consistent-hashing
-  use:
-    - bdix
-  interval: 300
+  interval: 60
 
 rules:
-- MATCH,PROXY
+- MATCH,proxy1
 `
 
     return new Response(config, {
