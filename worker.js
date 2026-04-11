@@ -3,35 +3,16 @@ export default {
 
     const url = new URL(request.url)
 
-    // token check
+    // token protection
     if (url.searchParams.get("token") !== "abc123") {
       return new Response("Forbidden", { status: 403 })
     }
 
-    // allow only clash clients
+    // allow only FiClash
     const ua = request.headers.get("User-Agent") || ""
 
-    const allowedUA = [
-      "Clash",
-      "clash",
-      "ClashMeta",
-      "ClashforWindows",
-      "ClashX",
-      "Stash",
-      "FiClash"
-    ]
-
-    let allowed = false
-
-    for (const a of allowedUA) {
-      if (ua.includes(a)) {
-        allowed = true
-        break
-      }
-    }
-
-    if (!allowed) {
-      return new Response("404", { status: 404 })
+    if (!ua.includes("FiClash")) {
+      return new Response("Access Denied", { status: 403 })
     }
 
     const config = `
@@ -42,40 +23,27 @@ mode: rule
 log-level: info
 
 proxy-providers:
-
-  SPEED:
+  main:
     type: http
     url: "https://spike-block.darkblazespuky.workers.dev/proxies?token=abc123"
     interval: 3600
-    path: ./speed.yaml
-    filter: "SPEED"
-    health-check:
-      enable: true
-      url: http://www.gstatic.com/generate_204
-      interval: 60
-
-  FAST:
-    type: http
-    url: "https://spike-block.darkblazespuky.workers.dev/proxies?token=abc123"
-    interval: 3600
-    path: ./fast.yaml
-    filter: "FAST"
-    health-check:
-      enable: true
-      url: http://www.gstatic.com/generate_204
-      interval: 60
+    path: ./main.yaml
 
 proxy-groups:
 
 - name: SPEED
   type: select
-  use:
-    - SPEED
+  proxies:
+    - speed
+    - nice
 
 - name: FAST
-  type: select
-  use:
-    - FAST
+  type: load-balance
+  strategy: round-robin
+  proxies:
+    - speed
+    - nice
+  interval: 60
 
 rules:
 - MATCH,SPEED
