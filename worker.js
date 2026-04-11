@@ -34,28 +34,26 @@ export default {
 
     const proxies = `
     proxies:
-  - name: BDIX-SS1
-    type: ss
-    server: bdix.errorx.me
-    port: 12545
-    cipher: aes-128-gcm
-    password: 925dca7a-7d12-4167-be86-4923be57a2d9
+  - name: "speed"
+    type: http
+    server: 144.48.108.121
+    port: 5452
+  - name: "nice"
+    type: http
+    server: 144.48.108.122
+    port: 5452
+proxy-groups:
+  - name: "FREE"
+    type: load-balance
+    strategy: round-robin
+    proxies:
+      - "speed"
+      - "nice"
+    url: "http://www.gstatic.com/generate_204" # Required for load-balance/health checks
+    interval: 10
 
-  - name: BDIX-VM1
-    type: vmess
-    server: bdix.errorx.me
-    port: 12546
-    uuid: 925dca7a-7d12-4167-be86-4923be57a2d9
-    alterId: 0
-    cipher: auto
-    network: tcp
-
-  - name: BDIX-VL1
-    type: vless
-    server: bdix.errorx.me
-    port: 12547
-    uuid: 925dca7a-7d12-4167-be86-4923be57a2d9
-    network: tcp
+rules:
+  - MATCH,FREE
 
 `
 
