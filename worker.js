@@ -36,12 +36,12 @@ export default {
     proxies:
   - name: "speed"
     type: http
-    server: 144.48.108.121
-    port: 5452
+    server: 103.109.96.20
+    port: 9862
   - name: "nice"
     type: http
-    server: 144.48.108.122
-    port: 5452
+    server: 103.69.150.138
+    port: 9859
 proxy-groups:
   - name: "FREE"
     type: load-balance
