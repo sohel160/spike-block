@@ -35,29 +35,60 @@ export default {
     }
 
     const config = `
+port: 7890
+socks-port: 7891
+allow-lan: true
+mode: rule
+log-level: info
+
 proxy-providers:
-  myprovider:
+  bdix:
     type: http
     url: "https://proxies-worker.darkblazespuky.workers.dev/?token=abc123"
     interval: 3600
-    path: ./proxies.yaml
+    path: ./bdix.yaml
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
-      interval: 10
+      interval: 30
 
 proxy-groups:
-- name: "FREE"
+
+- name: PROXY
+  type: select
+  proxies:
+    - AUTO-FAST
+    - AUTO-STABLE
+    - MANUAL
+    - DIRECT
+
+- name: MANUAL
   type: select
   use:
-  - myprovider
+    - bdix
+
+- name: AUTO-FAST
+  type: load-balance
+  strategy: round-robin
+  use:
+    - bdix
+  interval: 20
+
+- name: AUTO-STABLE
+  type: load-balance
+  strategy: consistent-hashing
+  use:
+    - bdix
+  interval: 300
 
 rules:
-- MATCH,FREE
+- MATCH,PROXY
 `
 
     return new Response(config, {
-      headers: { "Content-Type": "text/plain" }
+      headers: {
+        "Content-Type": "text/plain"
+      }
     })
 
   }
