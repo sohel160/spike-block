@@ -31,34 +31,39 @@ export default {
     }
 
     const config = `
-port: 7890
-socks-port: 7891
-allow-lan: true
-mode: rule
-
 proxy-providers:
-  main:
+  myprovider:
     type: http
-    url: "https://spike-block.darkblazespuky.workers.dev/proxies?token=abc123"
+    url: "https://spikes-block.darkblazespuky.workers.dev/?token=abc123"
     interval: 3600
-    path: ./main.yaml
+    path: ./proxies.yaml
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 10
 
 proxy-groups:
 
-- name: SPEED
-  type: select
-  use:
-    - main
+  - name: "ALL"
+    type: select
+    use:
+      - myprovider
 
-- name: FAST
-  type: load-balance
-  strategy: round-robin
-  use:
-    - main
-  interval: 60
+  - name: "LOAD-BALANCE"
+    type: load-balance
+    strategy: round-robin
+    interval: 10
+    use:
+      - myprovider
+
+  - name: "SPEED❤️"
+    type: select
+    proxies:
+      - LOAD-BALANCE
+      - ALL
 
 rules:
-- MATCH,SPEED
+  - MATCH,SPEED❤️
 `
 
     return new Response(config, {
