@@ -34,7 +34,7 @@ export default {
 proxy-providers:
   myprovider:
     type: http
-    url: "https://spikes-block.darkblazespuky.workers.dev/?token=abc123"
+    url: "https://secured.darkblazespuky.workers.dev/?token=abc123"
     interval: 3600
     path: ./proxies.yaml
     health-check:
