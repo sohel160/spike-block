@@ -48,7 +48,7 @@ proxy-groups:
     type: select
     proxies:
     use:
-    	- myprovider
+      - myprovider
 
   - name: "LOAD-BALANCE"
     type: load-balance
