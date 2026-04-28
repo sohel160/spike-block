@@ -44,6 +44,12 @@ proxy-providers:
 
 proxy-groups:
 
+  - name: ALL
+    type: select
+    proxies:
+    use:
+    	- myprovider
+
   - name: "LOAD-BALANCE"
     type: load-balance
     strategy: round-robin
@@ -55,6 +61,7 @@ proxy-groups:
     type: select
     proxies:
       - LOAD-BALANCE
+      - ALL
 
 rules:
   - MATCH,BOOM🔥
